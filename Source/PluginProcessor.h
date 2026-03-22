@@ -55,12 +55,7 @@ public:
 
     juce::AudioProcessorValueTreeState apvts;
 
-    juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 48000 };
-    float mix = 0.9f;
-    float delayMs = 20.0f;
-
-    float lfoPhase = 0.0f;
-    float lfoRate = 0.25f; // Hz (very slow wobble)
+    juce::dsp::Oscillator<float> lfo; 
     
 
 private:

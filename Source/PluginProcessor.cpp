@@ -94,17 +94,14 @@ void SlackerChorusAudioProcessor::changeProgramName (int index, const juce::Stri
 //==============================================================================
 void SlackerChorusAudioProcessor::prepareToPlay (double sr, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-    sampleRate = sr;
+    juce::dsp::ProcessSpec lfoSpec;
+	lfoSpec.sampleRate = sr;
+	lfoSpec.maximumBlockSize = samplesPerBlock;
+    lfoSpec.numChannels = 1; 
 
-    delayLine.reset();
-
-	delayLine.prepare({ 
-        sampleRate, 
-        static_cast<juce::uint32> (samplesPerBlock), 
-        static_cast<juce::uint32> (getTotalNumOutputChannels())}
-    );
+	lfo.prepare(lfoSpec);
+    lfo.initialise([](float x) { return std::sin(x); }, 128);
+    lfo.setFrequency(0.3f);
 }
 
 void SlackerChorusAudioProcessor::releaseResources()
@@ -150,56 +147,15 @@ void SlackerChorusAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // =========================
-    // PARAMETERS
-    // =========================
-    const float baseDelayMs = 20.0f;
-    const float depthMs = 5.0f;
-    const float mix = 0.5f;
-
-    const float lfoIncrement =
-        (2.0f * juce::MathConstants<float>::pi * lfoRate) / sampleRate;
-
-    // We will compute ONE averaged delay per block (important fix)
-    float blockLfoSum = 0.0f;
-    int totalSamples = buffer.getNumSamples();
-
-    // =========================
-    // PROCESS AUDIO
-    // =========================
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer(channel);
-
-        lfoPhase = std::fmod(lfoPhase, juce::MathConstants<float>::twoPi);
-
-        for (int sample = 0; sample < totalSamples; ++sample)
+        
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
-            float input = channelData[sample];
-
-            // ---- LFO ----
-            float lfoValue = std::sin(lfoPhase);
-            lfoPhase += lfoIncrement;
-
-            blockLfoSum += lfoValue;
-
-            float delayedSignal = delayLine.popSample(channel);
-            delayLine.pushSample(channel, input);
-
-            channelData[sample] =
-                (input * (1.0f - mix)) + (delayedSignal * mix);
+            float lfoValue = lfo.processSample(0.0f);
+            channelData[sample] *= (lfoValue + 1.0f) * 0.5f;
         }
-
-        // =========================
-        // UPDATE DELAY ONCE PER BLOCK
-        // =========================
-        float avgLfo = blockLfoSum / (float)totalSamples;
-        blockLfoSum = 0.0f;
-
-        float delayMs = baseDelayMs + (avgLfo * depthMs);
-        float delaySamples = (delayMs / 1000.0f) * sampleRate;
-
-        delayLine.setDelay(delaySamples);
     }
 }
 

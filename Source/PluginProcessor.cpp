@@ -102,6 +102,15 @@ void SlackerChorusAudioProcessor::prepareToPlay (double sr, int samplesPerBlock)
 	lfo.prepare(lfoSpec);
     lfo.initialise([](float x) { return std::sin(x); }, 128);
     lfo.setFrequency(0.3f);
+
+	juce::dsp::ProcessSpec delaySpec;
+	delaySpec.sampleRate = sr;
+    delaySpec.maximumBlockSize = samplesPerBlock;
+    delaySpec.numChannels = getTotalNumOutputChannels();
+
+	delayLine.prepare(delaySpec);
+	delayLine.setMaximumDelayInSamples(sr * 0.05f); // Max delay of 50ms
+    delayLine.reset();
 }
 
 void SlackerChorusAudioProcessor::releaseResources()
@@ -147,16 +156,35 @@ void SlackerChorusAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        auto* channelData = buffer.getWritePointer(channel);
-        
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        float lfoValue = lfo.processSample(0.0f);
+		float currentDelayMs = m_baseDelayMs + (lfoValue * m_depthMs);
+		float currentDelaySamples = (currentDelayMs / 1000.0f) * getSampleRate();
+		delayLine.setDelay(currentDelaySamples);
+
+        for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
-            float lfoValue = lfo.processSample(0.0f);
-            channelData[sample] *= (lfoValue + 1.0f) * 0.5f;
-        }
+			auto* channelData = buffer.getWritePointer(channel);
+			float inputSample = channelData[sample];
+			float delayedSample = delayLine.popSample(channel);
+
+			delayLine.pushSample(channel, inputSample);
+
+			channelData[sample] = 0.7f * inputSample + 0.3f * delayedSample; // Mix dry and wet signals
+		}
     }
+
+    //for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    //{
+    //    auto* channelData = buffer.getWritePointer(channel);
+    //    
+    //    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+    //    {
+    //        float lfoValue = lfo.processSample(0.0f);
+    //        channelData[sample] *= (lfoValue + 1.0f) * 0.5f;
+    //    }
+    //}
 }
 
 //==============================================================================

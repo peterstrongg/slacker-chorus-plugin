@@ -56,11 +56,14 @@ public:
     juce::AudioProcessorValueTreeState apvts;
 
     juce::dsp::Oscillator<float> lfo; 
-    
+    juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine; 
+     
+	float m_baseDelayMs = 15.0f; // Base delay time in milliseconds
+	float m_depthMs = 4.0f; // Depth of modulation in milliseconds    
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SlackerChorusAudioProcessor)
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    float sampleRate = 44100.0f;
+
 };

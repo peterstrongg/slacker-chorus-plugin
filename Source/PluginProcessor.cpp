@@ -23,6 +23,9 @@ SlackerChorusAudioProcessor::SlackerChorusAudioProcessor()
     apvts(*this, nullptr, "PARAMETERS", createParameterLayout())
 #endif
 {
+	m_rateParameter = apvts.getRawParameterValue("RATE");
+	m_depthParameter = apvts.getRawParameterValue("DEPTH");  
+	m_mixParameter = apvts.getRawParameterValue("MIX");
 }
 
 SlackerChorusAudioProcessor::~SlackerChorusAudioProcessor()
@@ -101,7 +104,7 @@ void SlackerChorusAudioProcessor::prepareToPlay (double sr, int samplesPerBlock)
 
 	lfo.prepare(lfoSpec);
     lfo.initialise([](float x) { return std::sin(x); }, 128);
-    lfo.setFrequency(0.3f);
+    lfo.setFrequency(*m_rateParameter);
 
 	juce::dsp::ProcessSpec delaySpec;
 	delaySpec.sampleRate = sr;
@@ -159,7 +162,7 @@ void SlackerChorusAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         float lfoValue = lfo.processSample(0.0f);
-		float currentDelayMs = m_baseDelayMs + (lfoValue * m_depthMs);
+		float currentDelayMs = m_baseDelayMs + (lfoValue * (*m_depthParameter));
 		float currentDelaySamples = (currentDelayMs / 1000.0f) * getSampleRate();
 		delayLine.setDelay(currentDelaySamples);
 
@@ -168,23 +171,11 @@ void SlackerChorusAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 			auto* channelData = buffer.getWritePointer(channel);
 			float inputSample = channelData[sample];
 			float delayedSample = delayLine.popSample(channel);
-
 			delayLine.pushSample(channel, inputSample);
 
-			channelData[sample] = 0.7f * inputSample + 0.3f * delayedSample; // Mix dry and wet signals
+			channelData[sample] = (1 - (*m_mixParameter)) * inputSample + (*m_mixParameter) * delayedSample; // Mix dry and wet signals
 		}
     }
-
-    //for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    //{
-    //    auto* channelData = buffer.getWritePointer(channel);
-    //    
-    //    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-    //    {
-    //        float lfoValue = lfo.processSample(0.0f);
-    //        channelData[sample] *= (lfoValue + 1.0f) * 0.5f;
-    //    }
-    //}
 }
 
 //==============================================================================

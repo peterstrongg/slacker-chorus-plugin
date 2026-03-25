@@ -58,8 +58,11 @@ public:
     juce::dsp::Oscillator<float> lfo; 
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine; 
      
-	float m_baseDelayMs = 15.0f; // Base delay time in milliseconds
-	float m_depthMs = 4.0f; // Depth of modulation in milliseconds    
+	float m_baseDelayMs = 15.0f; // Base delay time in milliseconds  
+
+    std::atomic<float>* m_rateParameter = nullptr; 
+	std::atomic<float>* m_depthParameter = nullptr;
+	std::atomic<float>* m_mixParameter = nullptr;
 
 private:
     //==============================================================================

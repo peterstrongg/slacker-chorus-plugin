@@ -13,9 +13,15 @@
 SlackerChorusAudioProcessorEditor::SlackerChorusAudioProcessorEditor (SlackerChorusAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+	rateAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "RATE", rateSlider);
+	depthAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DEPTH", depthSlider);
+	mixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "MIX", mixSlider);
+
+	addAndMakeVisible(rateSlider);
+    addAndMakeVisible(depthSlider);
+    addAndMakeVisible(mixSlider);
+
+    setSize (600, 400);
 }
 
 SlackerChorusAudioProcessorEditor::~SlackerChorusAudioProcessorEditor()
@@ -30,11 +36,12 @@ void SlackerChorusAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (15.0f));
-    g.drawFittedText ("Hello World! Final Chorus", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("Slacker Chorus", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void SlackerChorusAudioProcessorEditor::resized()
 {
+	rateSlider.setBounds(10, 10, getWidth() - 20, 20);
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }

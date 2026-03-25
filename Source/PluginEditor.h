@@ -29,5 +29,13 @@ private:
     // access the processor object that created it.
     SlackerChorusAudioProcessor& audioProcessor;
 
+    juce::Slider rateSlider;
+	juce::Slider depthSlider;
+    juce::Slider mixSlider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> rateAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> depthAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixAttachment;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SlackerChorusAudioProcessorEditor)
 };

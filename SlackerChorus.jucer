@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="geg0QK" name="SlackerChorus">
     <GROUP id="{C8F49725-3518-4549-4CDC-434A715E270D}" name="Source">
+      <FILE id="CyCvNX" name="RotaryDialLookAndFeel.h" compile="0" resource="0"
+            file="Source/RotaryDialLookAndFeel.h"/>
+      <FILE id="qaAlie" name="RotaryDialLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/RotaryDialLookAndFeel.cpp"/>
       <FILE id="ReRKSo" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="FUaRY5" name="PluginProcessor.h" compile="0" resource="0"

@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "RotaryDialLookAndFeel.h"
 
 //==============================================================================
 SlackerChorusAudioProcessorEditor::SlackerChorusAudioProcessorEditor (SlackerChorusAudioProcessor& p)
@@ -20,6 +21,9 @@ SlackerChorusAudioProcessorEditor::SlackerChorusAudioProcessorEditor (SlackerCho
 	addAndMakeVisible(rateSlider);
     addAndMakeVisible(depthSlider);
     addAndMakeVisible(mixSlider);
+
+    rateSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+
 
     setSize (600, 400);
 }
@@ -41,7 +45,11 @@ void SlackerChorusAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SlackerChorusAudioProcessorEditor::resized()
 {
-	rateSlider.setBounds(10, 10, getWidth() - 20, 20);
+	rateSlider.setBounds(200, 200, getWidth() - 20, 20);
+	
+    
+    //depthSlider.setBounds(10, 40, getWidth() - 20, 20);
+	//mixSlider.setBounds(10, 70, getWidth() - 20, 20);
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }

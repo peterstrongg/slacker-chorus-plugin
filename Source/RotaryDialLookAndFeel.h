@@ -16,11 +16,9 @@
 class RotaryDialLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
-    RotaryDialLookAndFeel() 
+    RotaryDialLookAndFeel(juce::Image img) : dialImage(img)
     {
-        dialImage = juce::ImageFileFormat::loadFrom(BinaryData::earth_png, BinaryData::earth_pngSize);
         jassert(dialImage.isValid());
-		// dialImage.multiplyAllAlphas(1.0f); // Ensure the image is treated as premultiplied alpha
     };
 
     void drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height,

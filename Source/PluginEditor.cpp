@@ -19,7 +19,8 @@ SlackerChorusAudioProcessorEditor::SlackerChorusAudioProcessorEditor (SlackerCho
 {
 	rateAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "RATE", rateSlider);
 
-    rateLookAndFeel = std::make_unique<RotaryDialLookAndFeel>();
+    juce::Image earthImage = juce::ImageFileFormat::loadFrom(BinaryData::earth_png, BinaryData::earth_pngSize);
+    rateLookAndFeel = std::make_unique<RotaryDialLookAndFeel>(earthImage);
     
     rateSlider.setLookAndFeel(rateLookAndFeel.get());
     rateSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);

@@ -1,37 +1,24 @@
-/*
-  ==============================================================================
-
-    RotaryDialLookAndFeel.cpp
-    Created: 25 Mar 2026 10:39:06pm
-    Author:  peter
-
-  ==============================================================================
-*/
-
 #include "RotaryDialLookAndFeel.h"
 
-void RotaryDialLookAndFeel::drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height,
-    float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider)
+void RotaryDialLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
+    float sliderPosProportional, float rotaryStartAngle,
+    float rotaryEndAngle, juce::Slider& slider)
 {
-    auto radius = (float) juce::jmin (width / 2, height / 2) - 4.0f;
-    auto centreX = (float) x + (float) width  * 0.5f;
-    auto centreY = (float) y + (float) height * 0.5f;
-    auto rx = centreX - radius;
-    auto ry = centreY - radius;
-    auto rw = radius * 2.0f;
-    auto angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
-    // fill
-    g.setColour (slider.findColour (juce::Slider::rotarySliderFillColourId));
-    g.fillEllipse (rx, ry, rw, rw);
-    // outline
-    g.setColour (slider.findColour (juce::Slider::rotarySliderOutlineColourId));
-    g.drawEllipse (rx, ry, rw, rw, 1.0f);
-    // pointer
-    juce::Path p;
-    auto pointerLength = radius * 0.33f;
-    auto pointerThickness = 2.0f;
-    p.addRectangle (-pointerThickness * 0.5f, -radius, pointerThickness, pointerLength);
-    p.applyTransform (juce::AffineTransform::rotation (angle).translated (centreX, centreY));
-    g.setColour (slider.findColour (juce::Slider::rotarySliderFillColourId).contrasting());
-    g.fillPath (p);
+    if (!dialImage.isValid())
+        return;
+
+    // Compute rotation angle based on slider position
+    float angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
+
+    // Center of the slider
+    float centerX = x + width * 0.5f;
+    float centerY = y + height * 0.5f;
+
+    // Save graphics state so rotation doesn't affect other drawings
+    g.addTransform(juce::AffineTransform::rotation(angle, centerX, centerY));
+
+    // Draw the image centered in the slider bounds
+    g.drawImageWithin(dialImage, x, y, width, height, juce::RectanglePlacement::centred);
+
+    // Optional: restore transform (JUCE automatically does this per paint call)
 }

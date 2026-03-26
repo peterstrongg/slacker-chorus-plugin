@@ -10,26 +10,29 @@
 #include "PluginEditor.h"
 #include "RotaryDialLookAndFeel.h"
 
+#define DIAL_WIDTH 100
+#define DIAL_HEIGHT 100
+
 //==============================================================================
 SlackerChorusAudioProcessorEditor::SlackerChorusAudioProcessorEditor (SlackerChorusAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
 	rateAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "RATE", rateSlider);
-	depthAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DEPTH", depthSlider);
-	mixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "MIX", mixSlider);
 
-	addAndMakeVisible(rateSlider);
-    addAndMakeVisible(depthSlider);
-    addAndMakeVisible(mixSlider);
-
+    rateLookAndFeel = std::make_unique<RotaryDialLookAndFeel>();
+    
+    rateSlider.setLookAndFeel(rateLookAndFeel.get());
     rateSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    rateSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
 
+    addAndMakeVisible(rateSlider);
 
     setSize (600, 400);
 }
 
 SlackerChorusAudioProcessorEditor::~SlackerChorusAudioProcessorEditor()
 {
+	rateSlider.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -45,8 +48,8 @@ void SlackerChorusAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SlackerChorusAudioProcessorEditor::resized()
 {
-	rateSlider.setBounds(200, 200, getWidth() - 20, 20);
 	
+    rateSlider.setBounds(50, 50, DIAL_WIDTH, DIAL_HEIGHT);
     
     //depthSlider.setBounds(10, 40, getWidth() - 20, 20);
 	//mixSlider.setBounds(10, 70, getWidth() - 20, 20);

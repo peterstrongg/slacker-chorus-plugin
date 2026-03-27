@@ -7,6 +7,10 @@
       <FILE id="x0cf4l" name="earth.png" compile="0" resource="1" file="Media/earth.png"/>
     </GROUP>
     <GROUP id="{C8F49725-3518-4549-4CDC-434A715E270D}" name="Source">
+      <FILE id="OMmA3s" name="SlackerChorusLookAndFeel.h" compile="0" resource="0"
+            file="Source/SlackerChorusLookAndFeel.h"/>
+      <FILE id="CMftqZ" name="SlackerChorusLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/SlackerChorusLookAndFeel.cpp"/>
       <FILE id="CyCvNX" name="RotaryDialLookAndFeel.h" compile="0" resource="0"
             file="Source/RotaryDialLookAndFeel.h"/>
       <FILE id="qaAlie" name="RotaryDialLookAndFeel.cpp" compile="1" resource="0"

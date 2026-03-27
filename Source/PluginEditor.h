@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "RotaryDialLookAndFeel.h"
+#include "SlackerChorusLookAndFeel.h"
 
 
 //==============================================================================
@@ -39,7 +40,12 @@ private:
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> depthAttachment;
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixAttachment;
 
-    std::unique_ptr<RotaryDialLookAndFeel> rateLookAndFeel;
+    std::unique_ptr<SlackerChorusLookAndFeel> rateLookAndFeel;
+    std::unique_ptr<RotaryDialLookAndFeel> depthLookAndFeel;
+    std::unique_ptr<RotaryDialLookAndFeel> mixLookAndFeel;
+
+	std::unique_ptr<SlackerChorusLookAndFeel> customLookAndFeel;
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SlackerChorusAudioProcessorEditor)
 };

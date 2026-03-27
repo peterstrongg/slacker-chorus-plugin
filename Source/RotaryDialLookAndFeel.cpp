@@ -15,5 +15,4 @@ void RotaryDialLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, in
     g.addTransform(juce::AffineTransform::rotation(angle, centerX, centerY));
 
     g.drawImageWithin(dialImage, x, y, width, height, juce::RectanglePlacement::centred);
-
 }

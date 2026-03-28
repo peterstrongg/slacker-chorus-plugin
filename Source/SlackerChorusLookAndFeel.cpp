@@ -19,19 +19,24 @@ void SlackerChorusLookAndFeel::drawRotarySlider(
     auto centerX = x + width * 0.5f;
     auto centerY = y + height * 0.5f;
 
-    g.setColour(juce::Colour::fromRGB(180, 240, 180));
+    // Dial
+    g.setColour(juce::Colour::fromRGB(240, 220, 200)); // warm beige
     g.fillEllipse(centerX - radius, centerY - radius, radius * 2, radius * 2);
-    
-    // Shadow
-    g.setColour(juce::Colour::fromRGBA(0, 0, 0, 40));
-    g.fillEllipse(centerX - radius + 2, centerY - radius + 2, radius * 2, radius * 2);
 
-    // Indicator line
+    // Base angle
     float angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
-    juce::Line<float> line(centerX, centerY,
-        centerX + radius * 0.8f * std::cos(angle - juce::MathConstants<float>::halfPi),
-        centerY + radius * 0.8f * std::sin(angle - juce::MathConstants<float>::halfPi));
 
-    g.setColour(juce::Colour::fromRGB(10, 60, 10));
-    g.drawLine(line, 4.0f);
+    float innerRadius = radius * 0.6f;
+    float outerRadius = radius;
+
+    // Indicator
+    juce::Line<float> line(
+        centerX + innerRadius * std::cos(angle - juce::MathConstants<float>::halfPi),
+        centerY + innerRadius * std::sin(angle - juce::MathConstants<float>::halfPi),
+        centerX + outerRadius * std::cos(angle - juce::MathConstants<float>::halfPi),
+        centerY + outerRadius * std::sin(angle - juce::MathConstants<float>::halfPi)
+    );
+
+    g.setColour(juce::Colour::fromRGB(0, 160, 140));
+    g.drawLine(line, 12.0f); 
 }
